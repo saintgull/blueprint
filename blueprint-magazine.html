@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Blueprint Magazine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1237b2;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Dotted grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+        }
+        
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 4rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tagline {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            line-height: 1.4;
+        }
+        
+        .content-box {
+            background-color: white;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #1237b2;
+        }
+        
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        
+        p {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+        
+        .highlight-box {
+            background-color: #f0f4ff;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: #1237b2;
+        }
+        
+        .cta-section {
+            background-color: white;
+            padding: 60px 40px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #1237b2;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #0e2a7e;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1237b2;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .phase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .phase-item {
+            background-color: #f8f9fa;
+            padding: 30px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .phase-arrow {
+            position: absolute;
+            top: 50%;
+            right: -50px;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 2px;
+            background-color: #1237b2;
+            z-index: 1;
+        }
+        
+        .phase-arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid #1237b2;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        .phase-item:last-child .phase-arrow {
+            display: none;
+        }
+        
+        .phase-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #1237b2;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .submission-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .submission-type {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .submission-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.3rem;
+            }
+            
+            .content-box, .cta-section {
+                padding: 30px;
+            }
+            
+            .phase-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .phase-arrow {
+                display: none;
+            }
+        }
+        
+        nav {
+            background-color: rgba(18, 55, 178, 0.6);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        nav .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav a {
+            font-family: 'Libre Baskerville', serif;
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            margin: 0 20px;
+            transition: opacity 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        nav a:hover {
+            opacity: 0.8;
+        }
+        
+        body {
+            padding-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div>
+                <a href="#">Home</a>
+                <a href="for-writers.html">For Writers</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <header>
+            <h1>The Blueprint Magazine</h1>
+            <p class="tagline">Turn all Grassroots Projects into Pathfinders</p>
+        </header>
+
+        <div class="content-box">
+            <h2>The Problem</h2>
+            <p><strong>Great community projects fail at alarming rates.</strong></p>
+            <p>Without shared knowledge, grassroots initiatives face high risk, wasted capital, and lost potential for self-governance.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">30%+</div>
+                    <div class="stat-label">Target Success Rate Increase</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2>Our Mission</h2>
+            <p><strong>We map pathways to success by collecting and sharing the methodologies behind grassroots projects.</strong></p>
+            <p>Sharing the 'how-to' is the only path to community resilience and Network Governance.</p>
+        </div>
+
+        <div class="content-box">
+            <h2>Our Roadmap</h2>
+            
+            <div class="phase-grid">
+                <div class="phase-item">
+                    <div class="phase-number">1</div>
+                    <h3>The Magazine</h3>
+                    <p>Case stories and lessons from the frontline of community action.</p>
+                    <div class="phase-arrow"></div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-number">2</div>
+                    <h3>Data & Tools</h3>
+                    <p>Searchable database, comparison tools, and risk assessment models.</p>
+                    <div class="phase-arrow"></div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-number">3</div>
+                    <h3>The Ecosystem</h3>
+                    <p>Professional Community Project Methodology with courses and workshops.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2>The Team</h2>
+            <p>Multidisciplinary experts translating community experience into scalable knowledge:</p>
+            <ul>
+                <li><strong>Professional Project Management (PMI)</strong></li>
+                <li><strong>Grassroots Community Work</strong></li>
+                <li><strong>Academic Research & Systemization</strong></li>
+            </ul>
+        </div>
+
+        <div class="content-box">
+            <h2>Share Your Story</h2>
+            <p>We collect various types of contributions:</p>
+            
+            <div class="submission-types">
+                <div class="submission-type">
+                    <strong>Field Trip</strong>
+                    <p>Deep-dive case studies</p>
+                </div>
+                <div class="submission-type">
+                    <strong>Comparative Analysis</strong>
+                    <p>Cross-case insights</p>
+                </div>
+                <div class="submission-type">
+                    <strong>Tracing</strong>
+                    <p>Long-term follow-ups</p>
+                </div>
+                <div class="submission-type">
+                    <strong>Best Practices</strong>
+                    <p>Professional guidance</p>
+                </div>
+                <div class="submission-type">
+                    <strong>Community Story</strong>
+                    <p>News and human interest</p>
+                </div>
+                <div class="submission-type">
+                    <strong>Arts & Imagery</strong>
+                    <p>Visual documentation</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Join the Movement</h2>
+            
+            <div>
+                <a href="https://www.patreon.com/eletronic_democracy_practices" class="cta-button">Become a Founding Reader ($5/month)</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeAAP5eySgbRSXru-q1qLh_8WKwRb8-DNkGmbvnUwfMV-i3tg/viewform" class="cta-button">Submit Your Project</a>
+            </div>
+            
+            <p style="margin-top: 30px;">Connect: <a href="https://discord.com/invite/2eDunttSeS" style="color: #1237b2;">Discord</a> | Instagram | Facebook | Newsletter</p>
+        </div>
+    </div>
+</body>
+</html>
