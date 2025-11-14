@@ -31,7 +31,7 @@ The Blueprint Magazine collects and shares methodologies from community-led proj
 ## Links
 
 - **Live Site**: https://theblueprint.media/ 
-- **Patreon**: [Become a Founding Reader](https://www.patreon.com/eletronic_democracy_practices)
+- **Ghost**: [Become a Founding Reader](https://the-blueprint.ghost.io)
 - **Discord**: [Join Community](https://discord.com/invite/2eDunttSeS)
 - **Submit Project**: [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSeAAP5eySgbRSXru-q1qLh_8WKwRb8-DNkGmbvnUwfMV-i3tg/viewform)
 - **Submit Article**: [Writer's Form](https://docs.google.com/forms/d/e/1FAIpQLSfii8v3LrAIQXjzKt6ADhztbPK1N_4YQd1wGgPz0JNRojHyJw/viewform)
