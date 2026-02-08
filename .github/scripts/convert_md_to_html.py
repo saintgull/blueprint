@@ -8,6 +8,7 @@ Deletes converted Markdown files.
 
 import os
 import re
+import json
 import markdown
 import yaml
 from pathlib import Path
@@ -249,6 +250,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </html>"""
 
 
+def append_to_jsonl(filename, data_object):
+    """Appends a single Python object as a JSON line to a file."""
+    with open(filename, 'a', encoding='utf-8') as f:
+        # Serialize the object to a JSON string and add a newline
+        json_string = json.dumps(data_object)
+        f.write(json_string + '\n')
+
+
 def extract_frontmatter(content):
     """Extract YAML frontmatter from markdown content."""
     frontmatter_pattern = re.compile(r'^---\s*\n(.*?)\n---\s*\n', re.DOTALL)
@@ -347,6 +356,10 @@ def convert_markdown_to_html(md_file_path, output_dir):
     # Write HTML file
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_html)
+
+    # append the new data
+    append_to_jsonl(output_dir / '_data.jsonl',
+                    {"title": title, "url": output_path})
     
     print(f"Created: {output_path}")
     return True
