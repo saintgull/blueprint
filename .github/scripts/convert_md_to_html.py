@@ -359,7 +359,7 @@ def convert_markdown_to_html(md_file_path, output_dir):
 
     # append the new data
     append_to_jsonl(output_dir / '_data.jsonl',
-                    {"title": title, "url": output_path})
+                    {"title": title, "url": str(output_path)})
     
     print(f"Created: {output_path}")
     return True
