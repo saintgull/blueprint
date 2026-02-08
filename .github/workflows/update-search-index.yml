@@ -1,0 +1,48 @@
+name: Update Search Index
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests xmltodict chromadb sentence-transformers cryptography PyJWT
+      
+      - name: Check sitemap and update index
+        env:
+          GHOST_API_URL: ${{ secrets.GHOST_API_URL }}
+          GHOST_CONTENT_API_KEY: ${{ secrets.GHOST_CONTENT_API_KEY }}
+          INDEX_ENCRYPTION_KEY: ${{ secrets.INDEX_ENCRYPTION_KEY }}
+        run: python .github/scripts/update_search_index.py
+      
+      - name: Upload encrypted index
+        uses: actions/upload-artifact@v4
+        with:
+          name: search-index
+          path: index/search_index.enc
+          retention-days: 90
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add cache/
+          git add index/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update search index [skip ci]" && git push)
