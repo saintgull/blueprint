@@ -8,10 +8,11 @@ import os
 import re
 import jwt
 import yaml
+import json
 import requests
 from pathlib import Path
 from datetime import datetime as dt
-from datetime import timedelta
+from datetime import timedelta, timezone
 
 # Ghost API configuration from environment variables
 GHOST_API_URL = os.environ.get('GHOST_API_URL', '')  # e.g., https://your-site.ghost.io
@@ -89,12 +90,21 @@ def create_ghost_post(api_url, token, title, markdown_content, metadata):
     
     if 'date' in metadata:
         try:
-            # Parse and format the date
+            # Parse and format the date in proper ISO 8601 format
             if isinstance(metadata['date'], str):
                 post_date = dt.fromisoformat(str(metadata['date']))
             else:
                 post_date = metadata['date']
-            post_data['posts'][0]['published_at'] = post_date.isoformat()
+            
+            # Ensure timezone-aware datetime in ISO format
+            # Ghost expects format like: 2025-02-08T10:30:00.000Z
+            if post_date.tzinfo is None:
+                # If no timezone, format as UTC with Z suffix
+                post_data['posts'][0]['published_at'] = post_date.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+            else:
+                # If timezone-aware, convert to UTC and format
+                post_date_utc = post_date.astimezone(timezone.utc)
+                post_data['posts'][0]['published_at'] = post_date_utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
         except:
             pass
     
@@ -136,6 +146,7 @@ def convert_markdown_to_mobiledoc(markdown_content):
     """
     Convert Markdown to Ghost's Mobiledoc format.
     Ghost's Mobiledoc format supports markdown cards.
+    Returns JSON string (not dict).
     """
     
     # Create a simple Mobiledoc structure with a markdown card
@@ -152,7 +163,8 @@ def convert_markdown_to_mobiledoc(markdown_content):
         "ghostVersion": "4.0"
     }
     
-    return mobiledoc
+    # Return as JSON string, not dict
+    return json.dumps(mobiledoc)
 
 
 def process_markdown_file(file_path, api_url, token):
