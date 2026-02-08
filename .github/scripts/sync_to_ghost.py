@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Sync Markdown files from _draft to Ghost CMS.
 Uses Ghost Admin API to create posts with specific tags and visibility settings.
@@ -15,8 +14,8 @@ from datetime import datetime as dt
 from datetime import timedelta, timezone
 
 # Ghost API configuration from environment variables
-GHOST_API_URL = os.environ.get('GHOST_API_URL', '')  # e.g., https://your-site.ghost.io
-GHOST_ADMIN_API_KEY = os.environ.get('GHOST_ADMIN_API_KEY', '')
+GHOST_API_URL = os.environ.get('GHOST_API_URL', 'https://the-blueprint.ghost.io')  # e.g., https://your-site.ghost.io
+GHOST_ADMIN_API_KEY = os.environ.get('GHOST_ADMIN_API_KEY', '69882cf0dd2e770001de7cfe:8b7d47aa8f2dad67b561f002e3e7539bbcd2ceca875e58c17bfb333c4ebbafee')
 
 
 def extract_frontmatter(content):
@@ -78,7 +77,7 @@ def create_ghost_post(api_url, token, title, markdown_content, metadata):
             'mobiledoc': convert_markdown_to_mobiledoc(markdown_content),
             'status': 'published',  # Set as published
             'visibility': 'public',  # Publicly accessible
-            'tags': ['type-field-trip'],  # Add the required tag
+            'tags': ['Field Trip'],  # Add the required tag
         }]
     }
     
@@ -190,6 +189,8 @@ def process_markdown_file(file_path, api_url, token):
         else:
             title = Path(file_path).stem.replace('-', ' ').title()
     
+    # Prevent duplicate title
+    md_content = md_content.replace(f'# {title}\n', '')
     # Create post in Ghost
     success = create_ghost_post(api_url, token, title, md_content, metadata)
     
