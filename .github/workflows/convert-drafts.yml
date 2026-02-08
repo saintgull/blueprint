@@ -9,7 +9,8 @@ on:
 jobs:
   convert:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write  # Required for git push or gh release
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,14 +26,14 @@ jobs:
         run: |
           pip install markdown pyyaml PyJWT requests
       
-      - name: Convert Markdown to HTML
-        run: python .github/scripts/convert_md_to_html.py
-      
       - name: Sync to Ghost CMS
         env:
           GHOST_API_URL: ${{ secrets.GHOST_API_URL }}
           GHOST_ADMIN_API_KEY: ${{ secrets.GHOST_ADMIN_API_KEY }}
         run: python .github/scripts/sync_to_ghost.py
+      
+      - name: Convert Markdown to HTML
+        run: python .github/scripts/convert_md_to_html.py
       
       - name: Commit and push changes
         run: |
