@@ -10,6 +10,9 @@ jobs:
   update-index:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write  # Required for git push or gh release
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
