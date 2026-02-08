@@ -1,0 +1,43 @@
+name: Convert Drafts to HTML
+
+on:
+  push:
+    paths:
+      - '_draft/**.md'
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install markdown pyyaml PyJWT requests
+      
+      - name: Convert Markdown to HTML
+        run: python .github/scripts/convert_md_to_html.py
+      
+      - name: Sync to Ghost CMS
+        env:
+          GHOST_API_URL: ${{ secrets.GHOST_API_URL }}
+          GHOST_ADMIN_API_KEY: ${{ secrets.GHOST_ADMIN_API_KEY }}
+        run: python .github/scripts/sync_to_ghost.py
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add post/
+          git add _draft/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Convert drafts to HTML [skip ci]" && git push)
