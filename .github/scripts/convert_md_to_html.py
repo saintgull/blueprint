@@ -310,6 +310,9 @@ def convert_markdown_to_html(md_file_path, output_dir):
         else:
             title = Path(md_file_path).stem.replace('-', ' ').title()
     
+    # remove duplicate title in template
+    html_content.replace('<h1>{title}</h1>', '')
+            
     # Create tagline if available
     tagline = ''
     if 'tagline' in metadata:
