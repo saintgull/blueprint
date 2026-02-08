@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - The Blueprint Magazine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1237b2;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 60px;
+        }
+        
+        /* Dotted grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+        
+        nav {
+            background-color: rgba(18, 55, 178, 0.6);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        nav .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav a {
+            font-family: 'Libre Baskerville', serif;
+            color: white;
+            text-decoration: none;
+            font-weight: 400;
+            margin: 0 20px;
+            transition: opacity 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        nav a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+        }
+        
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+        
+        .content-box {
+            background-color: white;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            border: 2px solid #e0e0e0;
+            transition: border-color 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: #1237b2;
+        }
+        
+        .article-list {
+            list-style: none;
+        }
+        
+        .article-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .article-item:last-child {
+            border-bottom: none;
+        }
+        
+        .article-item:hover {
+            background-color: #f8f9fa;
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        
+        .article-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .article-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.3rem;
+            color: #1237b2;
+            margin-bottom: 8px;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+        
+        .article-link:hover .article-title {
+            color: #0e2a7e;
+        }
+        
+        .article-date {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 300;
+        }
+        
+        .article-count {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content-box {
+                padding: 30px 20px;
+            }
+            
+            .article-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div>
+                <a href="index.html">Home</a>
+                <a href="articles.html">Articles</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <header>
+            <h1>All Articles</h1>
+            <p class="subtitle">Explore our collection of grassroots project experiences</p>
+        </header>
+
+        <div class="content-box">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search articles by title..."
+                    aria-label="Search articles"
+                >
+            </div>
+            
+            <div id="articleContainer">
+                <div class="loading">Loading articles...</div>
+            </div>
+            
+            <div id="articleCount" class="article-count" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let allArticles = [];
+        
+        // Function to extract date from URL
+        function extractDate(url) {
+            const match = url.match(/(\d{4}-\d{2}-\d{2})/);
+            if (match) {
+                const date = new Date(match[1]);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+            return '';
+        }
+        
+        // Function to clean title (remove " - The Blueprint Magazine" suffix)
+        function cleanTitle(title) {
+            return title.replace(/ - The Blueprint Magazine$/, '');
+        }
+        
+        // Function to render articles
+        function renderArticles(articles) {
+            const container = document.getElementById('articleContainer');
+            const countElement = document.getElementById('articleCount');
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<div class="no-results">No articles found matching your search.</div>';
+                countElement.style.display = 'none';
+                return;
+            }
+            
+            const articleList = document.createElement('ul');
+            articleList.className = 'article-list';
+            
+            articles.forEach(article => {
+                const li = document.createElement('li');
+                li.className = 'article-item';
+                
+                const link = document.createElement('a');
+                link.href = article.url;
+                link.className = 'article-link';
+                
+                const title = document.createElement('h2');
+                title.className = 'article-title';
+                title.textContent = cleanTitle(article.title);
+                
+                const date = document.createElement('div');
+                date.className = 'article-date';
+                const dateStr = extractDate(article.url);
+                if (dateStr) {
+                    date.textContent = dateStr;
+                }
+                
+                link.appendChild(title);
+                if (dateStr) {
+                    link.appendChild(date);
+                }
+                li.appendChild(link);
+                articleList.appendChild(li);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(articleList);
+            
+            countElement.textContent = `Showing ${articles.length} article${articles.length !== 1 ? 's' : ''}`;
+            countElement.style.display = 'block';
+        }
+        
+        // Function to filter articles
+        function filterArticles(searchTerm) {
+            const filtered = allArticles.filter(article => 
+                cleanTitle(article.title).toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            renderArticles(filtered);
+        }
+        
+        // Load articles from JSONL file
+        async function loadArticles() {
+            const container = document.getElementById('articleContainer');
+            
+            try {
+                const response = await fetch('post/_data.jsonl');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load articles');
+                }
+                
+                const text = await response.text();
+                const lines = text.trim().split('\n');
+                
+                allArticles = lines
+                    .filter(line => line.trim())
+                    .map(line => JSON.parse(line))
+                    .sort((a, b) => {
+                        // Sort by date in descending order (newest first)
+                        const dateA = extractDate(a.url);
+                        const dateB = extractDate(b.url);
+                        return dateB.localeCompare(dateA);
+                    });
+                
+                renderArticles(allArticles);
+                
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                container.innerHTML = '<div class="error">Unable to load articles. Please try again later.</div>';
+            }
+        }
+        
+        // Set up search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            filterArticles(e.target.value);
+        });
+        
+        // Load articles when page loads
+        loadArticles();
+    </script>
+</body>
+</html>
