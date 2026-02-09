@@ -9,6 +9,9 @@ on:
 jobs:
   update-index:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required for git push
     
     steps:
       - name: Checkout repository
@@ -44,5 +47,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add cache/
-          git add index/
+          git add index/search_index.enc
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update search index [skip ci]" && git push)
