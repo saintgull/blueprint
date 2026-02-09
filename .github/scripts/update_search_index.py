@@ -14,8 +14,10 @@ from datetime import datetime
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
 import chromadb
-from chromadb.utils.embedding_functions import ChromaBm25EmbeddingFunction
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+import bm25s
+import joblib
+import Stemmer
 
 # Configuration
 GHOST_API_URL = os.environ.get('GHOST_API_URL', 'https://the-blueprint.ghost.io')
@@ -32,6 +34,8 @@ INDEX_DIR.mkdir(exist_ok=True)
 SITEMAP_CACHE = CACHE_DIR / 'sitemap_hash.txt'
 INDEXED_POSTS_CACHE = CACHE_DIR / 'indexed_posts.json'
 CHROMA_DB_PATH = INDEX_DIR / 'chroma_db'
+BM25_INDEX_PATH = INDEX_DIR / 'bm25_index.pkl'
+BM25_METADATA_PATH = INDEX_DIR / 'bm25_metadata.json'
 ENCRYPTED_INDEX_PATH = INDEX_DIR / 'search_index.enc'
 
 
@@ -45,8 +49,8 @@ def get_encryption_key():
     return hashlib.sha256(key_str.encode()).digest()
 
 
-def encrypt_directory(input_dir, output_path, key):
-    """Encrypt entire directory into a single file."""
+def encrypt_directory(input_dir, bm25_index_path, bm25_metadata_path, output_path, key):
+    """Encrypt entire directory and BM25 files into a single file."""
     import tarfile
     import io
     
@@ -56,7 +60,13 @@ def encrypt_directory(input_dir, output_path, key):
     # Create tar archive in memory
     tar_buffer = io.BytesIO()
     with tarfile.open(fileobj=tar_buffer, mode='w:gz') as tar:
+        # Add ChromaDB directory
         tar.add(input_dir, arcname='chroma_db')
+        # Add BM25 index if exists
+        if bm25_index_path.exists():
+            tar.add(bm25_index_path, arcname='bm25_index.pkl')
+        if bm25_metadata_path.exists():
+            tar.add(bm25_metadata_path, arcname='bm25_metadata.json')
     
     plaintext = tar_buffer.getvalue()
     
@@ -186,54 +196,90 @@ def fetch_post_content(post_url):
         return None
 
 
-def initialize_chromadb():
-    """Initialize ChromaDB with BM25 and semantic embeddings."""
+def initialize_indexes():
+    """Initialize ChromaDB and BM25 indexes."""
     
-    # Initialize BM25 for keyword search
-    bm25_ef = ChromaBm25EmbeddingFunction(
-        k=1.2,
-        b=0.75,
-        avg_doc_length=4000.0,  # Average article length in words
-        token_max_length=50
-    )
-    
-    # Initialize semantic embeddings
+    # Initialize semantic embeddings for ChromaDB
     semantic_ef = SentenceTransformerEmbeddingFunction(
         model_name="Qwen/Qwen3-Embedding-0.6B",
         device="cpu",
         normalize_embeddings=False
     )
     
-    # Create persistent client
+    # Create persistent client for ChromaDB
     client = chromadb.PersistentClient(path=str(CHROMA_DB_PATH))
     
-    # Get or create collections
+    # Get or create semantic collection
     try:
-        bm25_collection = client.get_collection(
-            name="posts_bm25",
-            embedding_function=bm25_ef
-        )
         semantic_collection = client.get_collection(
             name="posts_semantic",
             embedding_function=semantic_ef
         )
-        print("✓ Loaded existing ChromaDB collections")
+        print("✓ Loaded existing ChromaDB collection")
     except:
-        bm25_collection = client.create_collection(
-            name="posts_bm25",
-            embedding_function=bm25_ef
-        )
         semantic_collection = client.create_collection(
             name="posts_semantic",
             embedding_function=semantic_ef
         )
-        print("✓ Created new ChromaDB collections")
+        print("✓ Created new ChromaDB collection")
     
-    return client, bm25_collection, semantic_collection
+    # Initialize BM25
+    if BM25_INDEX_PATH.exists() and BM25_METADATA_PATH.exists():
+        print("✓ Loaded existing BM25 index")
+        bm25_retriever = joblib.load(BM25_INDEX_PATH)
+        with open(BM25_METADATA_PATH, 'r') as f:
+            bm25_metadata = json.load(f)
+    else:
+        print("✓ Creating new BM25 index")
+        bm25_retriever = None
+        bm25_metadata = {'documents': [], 'metadatas': [], 'ids': []}
+    
+    return client, semantic_collection, bm25_retriever, bm25_metadata
 
 
-def add_post_to_index(post_data, bm25_collection, semantic_collection):
-    """Add a post to both ChromaDB collections."""
+def build_bm25_index(bm25_metadata):
+    """Build BM25 index from accumulated metadata."""
+    if not bm25_metadata['documents']:
+        print("⚠️ No documents to index for BM25")
+        return None
+    
+    print(f"\n🔧 Building BM25 index for {len(bm25_metadata['documents'])} documents...")
+    
+    # Create stemmer
+    stemmer = Stemmer.Stemmer("english")
+    
+    # Tokenize documents using bm25s
+    corpus_tokens = bm25s.tokenize(
+        bm25_metadata['documents'],
+        stemmer=stemmer,
+        stopwords="en"
+    )
+    
+    # Create BM25 retriever
+    retriever = bm25s.BM25()
+    retriever.index(corpus_tokens)
+    
+    print("✓ BM25 index built successfully")
+    return retriever
+
+
+def save_bm25_index(retriever, metadata):
+    """Save BM25 index and metadata to disk."""
+    if retriever is None:
+        return
+    
+    # Save retriever using joblib
+    joblib.dump(retriever, BM25_INDEX_PATH)
+    print(f"✓ Saved BM25 index to {BM25_INDEX_PATH}")
+    
+    # Save metadata as JSON
+    with open(BM25_METADATA_PATH, 'w') as f:
+        json.dump(metadata, f, indent=2)
+    print(f"✓ Saved BM25 metadata to {BM25_METADATA_PATH}")
+
+
+def add_post_to_index(post_data, semantic_collection, bm25_metadata):
+    """Add a post to both semantic collection and BM25 metadata."""
     
     # Prepare document text (combine title, excerpt, and content)
     doc_text = f"{post_data['title']}\n\n{post_data['excerpt']}\n\n{post_data['plaintext']}"
@@ -248,17 +294,6 @@ def add_post_to_index(post_data, bm25_collection, semantic_collection):
         'feature_image': post_data.get('feature_image', ''),
     }
     
-    # Add to BM25 collection
-    try:
-        bm25_collection.add(
-            documents=[doc_text],
-            metadatas=[metadata],
-            ids=[post_data['slug']]
-        )
-        print(f"  ✓ Added to BM25 index: {post_data['title']}")
-    except Exception as e:
-        print(f"  ✗ Error adding to BM25: {e}")
-    
     # Add to semantic collection
     try:
         semantic_collection.add(
@@ -268,7 +303,13 @@ def add_post_to_index(post_data, bm25_collection, semantic_collection):
         )
         print(f"  ✓ Added to semantic index: {post_data['title']}")
     except Exception as e:
-        print(f"  ✗ Error adding to semantic: {e}")
+        print(f"  ✗ Error adding to semantic index: {e}")
+    
+    # Add to BM25 metadata (will be indexed later in batch)
+    bm25_metadata['documents'].append(doc_text)
+    bm25_metadata['metadatas'].append(metadata)
+    bm25_metadata['ids'].append(post_data['slug'])
+    print(f"  ✓ Added to BM25 metadata: {post_data['title']}")
 
 
 def main():
@@ -331,9 +372,9 @@ def main():
     
     print(f"\n📚 Found {len(new_posts)} new post(s) to index")
     
-    # Initialize ChromaDB
-    print("\n🔧 Initializing ChromaDB...")
-    client, bm25_collection, semantic_collection = initialize_chromadb()
+    # Initialize indexes
+    print("\n🔧 Initializing indexes...")
+    client, semantic_collection, bm25_retriever, bm25_metadata = initialize_indexes()
     
     # Process new posts
     print("\n📥 Fetching and indexing new posts...")
@@ -347,8 +388,8 @@ def main():
         if not post_data:
             continue
         
-        # Add to index
-        add_post_to_index(post_data, bm25_collection, semantic_collection)
+        # Add to indexes
+        add_post_to_index(post_data, semantic_collection, bm25_metadata)
         successfully_indexed.append(post_url)
     
     # Update indexed posts list
@@ -357,11 +398,17 @@ def main():
         save_indexed_posts(indexed_posts)
         print(f"\n✓ Successfully indexed {len(successfully_indexed)} new post(s)")
     
-    # Encrypt the database
-    print("\n🔐 Encrypting index...")
+    # Build BM25 index from all accumulated metadata
+    print("\n🔧 Building BM25 index...")
+    bm25_retriever = build_bm25_index(bm25_metadata)
+    save_bm25_index(bm25_retriever, bm25_metadata)
+    
+    # Encrypt the databases
+    print("\n🔐 Encrypting indexes...")
     try:
         encryption_key = get_encryption_key()
-        encrypt_directory(CHROMA_DB_PATH, ENCRYPTED_INDEX_PATH, encryption_key)
+        encrypt_directory(CHROMA_DB_PATH, BM25_INDEX_PATH, BM25_METADATA_PATH, 
+                         ENCRYPTED_INDEX_PATH, encryption_key)
         
         # Show encrypted file size
         file_size = ENCRYPTED_INDEX_PATH.stat().st_size / (1024 * 1024)
