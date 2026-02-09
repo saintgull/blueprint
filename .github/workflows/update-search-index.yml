@@ -23,7 +23,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install requests xmltodict chromadb sentence-transformers cryptography PyJWT bm25s joblib Stemmer
+          pip install requests xmltodict chromadb sentence-transformers cryptography PyJWT bm25s joblib PyStemmer
       
       - name: Check sitemap and update index
         env:
