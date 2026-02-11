@@ -63,6 +63,16 @@
             font-weight: 400;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
             line-height: 1.4;
+            margin-bottom: 16px;
+        }
+        
+        .subtagline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
         }
         
         .content-box {
@@ -133,6 +143,16 @@
         
         .cta-button:hover {
             background-color: #0e2a7e;
+        }
+        
+        .cta-button.secondary {
+            background-color: white;
+            color: #1237b2;
+            border: 2px solid #1237b2;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #f0f4ff;
         }
         
         .stats {
@@ -228,6 +248,31 @@
             margin-bottom: 10px;
         }
         
+        .user-paths {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .user-path {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-path:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-path-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
         .submission-types {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -248,6 +293,51 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
+        .cycle-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .cycle-item {
+            background-color: #f0f4ff;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .cycle-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            background-color: #1237b2;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .tool-card {
+            background-color: #f0f4ff;
+            padding: 25px;
+            border-left: 4px solid #1237b2;
+        }
+        
+        .search-embed {
+            margin-top: 30px;
+            min-height: 500px;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -257,17 +347,25 @@
                 font-size: 1.3rem;
             }
             
+            .subtagline {
+                font-size: 1rem;
+            }
+            
             .content-box, .cta-section {
                 padding: 30px;
             }
             
-            .phase-grid {
+            .phase-grid, .user-paths, .cycle-grid {
                 grid-template-columns: 1fr;
-                gap: 30px;
+                gap: 20px;
             }
             
             .phase-arrow {
                 display: none;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -317,6 +415,8 @@
         <div class="nav-container">
             <div>
                 <a href="#">Home</a>
+                <a href="articles.html">Free Articles</a>
+                <a href="https://the-blueprint.ghost.io/">All Articles</a>
                 <a href="https://the-blueprint.ghost.io/contributor-portal/">For Writers</a>
             </div>
         </div>
@@ -325,13 +425,137 @@
     <div class="container">
         <header>
             <h1>The Blueprint Magazine</h1>
-            <p class="tagline">Turn all Grassroots Projects into Pathfinders</p>
+            <p class="tagline">Learn from Past Attempts. Make Better Decisions. Share What Works.</p>
+            <p class="subtagline">We help people doing things make informed decisions using knowledge from previous attempts, so we collectively learn and improve the way we make the world better.</p>
         </header>
 
         <div class="content-box">
-            <h2>The Problem</h2>
-            <p><strong>Great community projects fail at alarming rates.</strong></p>
-            <p>Without shared knowledge, grassroots initiatives face high risk, wasted capital, and lost potential for self-governance.</p>
+            <h2>Start Here: Choose Your Path</h2>
+            <div class="user-paths">
+                <a href="#for-readers">
+                    <div class="user-path">
+                        <div class="user-path-icon">🔍</div>
+                        <h3>Readers</h3>
+                        <p>Browse free articles or search our knowledge base to learn from others' experiences</p>
+                    </div>
+                </a>
+                <a href="#for-contributors">
+                    <div class="user-path">
+                        <div class="user-path-icon">✍️</div>
+                        <h3>Contributors</h3>
+                        <p>Share your project journey with AI-powered tools to help you write</p>
+                    </div>
+                </a>
+                <div class="user-path">
+                    <div class="user-path-icon">🤝</div>
+                    <h3>Partners & Investors</h3>
+                    <p>Support the infrastructure for collective learning and community action</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2>How Collective Learning Works</h2>
+            <p>We believe in a continuous cycle of improvement where everyone contributes to shared knowledge:</p>
+            
+            <div class="cycle-grid">
+                <div class="cycle-item">
+                    <div class="cycle-number">1</div>
+                    <h3>Learn</h3>
+                    <p>Discover what others tried in similar situations</p>
+                </div>
+                <div class="cycle-item">
+                    <div class="cycle-number">2</div>
+                    <h3>Apply</h3>
+                    <p>Use those insights in your own context</p>
+                </div>
+                <div class="cycle-item">
+                    <div class="cycle-number">3</div>
+                    <h3>Report</h3>
+                    <p>Share what worked and what didn't</p>
+                </div>
+                <div class="cycle-item">
+                    <div class="cycle-number">4</div>
+                    <h3>Improve</h3>
+                    <p>Help others copy your success or explore alternatives</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box" id="for-readers">
+            <h2>For Readers: Access the Knowledge</h2>
+            <p>Make informed decisions based on real attempts from grassroots projects around the world.</p>
+            
+            <h3>Browse Curated Free Articles</h3>
+            <p>Read case studies, analyses, and lessons from the frontline of community action.</p>
+            <p><a href="articles.html" class="cta-button secondary">View Free Articles</a></p>
+            
+            <h3>Search the Full Knowledge Base</h3>
+            <p>Find specific insights, methodologies, and experiences across all our content:</p>
+            
+            <div class="search-embed">
+                <script
+                    type="module"
+                    src="https://gradio.s3-us-west-2.amazonaws.com/6.5.1/gradio.js"
+                ></script>
+                <gradio-app src="https://npc0-search-theblueprint.hf.space"></gradio-app>
+            </div>
+        </div>
+
+        <div class="content-box" id="for-contributors">
+            <h2>For Contributors: Share One's Journey</h2>
+            <p>Whether one succeeded, failed, or learned something unexpected—your experience matters. We welcome various types of contributions:</p>
+            
+            <div class="submission-types">
+                <div class="submission-type">
+                    <strong>Project Case Study</strong>
+                    <p>Deep-dive with full methodology</p>
+                    <a href="https://the-blueprint.ghost.io/contributor-portal/#project-case-study" style="font-size: 0.9rem; color: #1237b2;">Requirements →</a>
+                </div>
+                <div class="submission-type">
+                    <strong>Analysis</strong>
+                    <p>Comparative insights across cases</p>
+                    <a href="https://the-blueprint.ghost.io/contributor-portal/#analysis" style="font-size: 0.9rem; color: #1237b2;">Requirements →</a>
+                </div>
+                <div class="submission-type">
+                    <strong>Best Practices</strong>
+                    <p>Professional guidance & frameworks</p>
+                    <a href="https://the-blueprint.ghost.io/contributor-portal/#best-practices" style="font-size: 0.9rem; color: #1237b2;">Requirements →</a>
+                </div>
+                <div class="submission-type">
+                    <strong>Tracing</strong>
+                    <p>Long-term follow-ups on projects</p>
+                </div>
+            </div>
+            
+            <!-- <h3>Tools to Help You Write</h3>
+            <p>We provide AI-powered assistance to make contributing easier:</p>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>📝 Key Lessons Identifier</h3>
+                    <p>AI tools help you identify the most valuable insights from your experience</p>
+                </div>
+                <div class="tool-card">
+                    <h3>🏗️ Article Structure Assistant</h3>
+                    <p>Get guidance on organizing your story for maximum impact</p>
+                </div>
+            </div> -->
+            
+            <div class="highlight-box">
+                <h3>🎙️ Self-Report Your Journey with an AI Interviewer</h3>
+                <p>Not ready for a full article? Start by having a conversation with our AI interviewer. It will help you document your project journey through guided questions.</p>
+                <p><a href="https://npc0-survey-front.static.hf.space" class="cta-button" style="margin-top: 15px;">Start AI Interview</a></p>
+            </div>
+            
+            <p style="margin-top: 30px;"><a href="https://the-blueprint.ghost.io/contributor-portal/" class="cta-button">Full Contributor Guidelines</a></p>
+        </div>
+
+        <div class="content-box" id="for-investors">
+            <h2>For Partners & Investors</h2>
+            
+            <h3>Why This Matters</h3>
+            <p>Great community projects fail at alarming rates. Without shared knowledge, grassroots initiatives face high risk, wasted capital, and lost potential for self-governance. Every failed project represents lost resources and missed opportunities for community resilience.</p>
             
             <div class="stats">
                 <div class="stat-item">
@@ -339,21 +563,23 @@
                     <div class="stat-label">Target Success Rate Increase</div>
                 </div>
             </div>
-        </div>
-
-        <div class="content-box">
-            <h2>Our Mission</h2>
-            <p><strong>We map pathways to success by collecting and sharing the methodologies behind grassroots projects.</strong></p>
-            <p>Sharing the 'how-to' is the only path to community resilience and Network Governance.</p>
-        </div>
-
-        <div class="content-box">
-            <h2>Our Roadmap</h2>
+            
+            <h3>What We're Building</h3>
+            <p>Knowledge infrastructure for community action. We collect, systematize, and share the methodologies behind grassroots projects—turning isolated attempts into collective wisdom. This enables:</p>
+            <ul>
+                <li>Informed decision-making for new initiatives</li>
+                <li>Risk reduction through learning from others</li>
+                <li>Faster iteration and adaptation</li>
+                <li>Network governance through shared knowledge</li>
+            </ul>
+            
+            <h3>How We're Doing It</h3>
+            <p>Our multidisciplinary team combines professional project management (PMI), grassroots community work, and academic research to translate experience into scalable knowledge.</p>
             
             <div class="phase-grid">
                 <div class="phase-item">
                     <div class="phase-number">1</div>
-                    <h3>The Magazine</h3>
+                    <h3>The Knowledge Base / Magazine</h3>
                     <p>Case stories and lessons from the frontline of community action.</p>
                     <div class="phase-arrow"></div>
                 </div>
@@ -368,62 +594,29 @@
                 <div class="phase-item">
                     <div class="phase-number">3</div>
                     <h3>The Ecosystem</h3>
-                    <p>Professional Community Project Methodology with courses and workshops.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="content-box">
-            <h2>The Team</h2>
-            <p>Multidisciplinary experts translating community experience into scalable knowledge:</p>
-            <ul>
-                <li><strong>Professional Project Management (PMI)</strong></li>
-                <li><strong>Grassroots Community Work</strong></li>
-                <li><strong>Academic Research & Systemization</strong></li>
-            </ul>
-        </div>
-
-        <div class="content-box">
-            <h2>Share Your Story</h2>
-            <p>We collect various types of contributions:</p>
-            
-            <div class="submission-types">
-                <div class="submission-type">
-                    <strong>Field Trip</strong>
-                    <p>Deep-dive case studies</p>
-                </div>
-                <div class="submission-type">
-                    <strong>Comparative Analysis</strong>
-                    <p>Cross-case insights</p>
-                </div>
-                <div class="submission-type">
-                    <strong>Tracing</strong>
-                    <p>Long-term follow-ups</p>
-                </div>
-                <div class="submission-type">
-                    <strong>Best Practices</strong>
-                    <p>Professional guidance</p>
-                </div>
-                <div class="submission-type">
-                    <strong>Community Story</strong>
-                    <p>News and human interest</p>
-                </div>
-                <div class="submission-type">
-                    <strong>Arts & Imagery</strong>
-                    <p>Visual documentation</p>
+                    <p>Community Project Methodology with supporting events and method exchange parties.</p>
                 </div>
             </div>
         </div>
 
         <div class="cta-section">
             <h2>Join the Movement</h2>
+            <p style="margin-bottom: 30px;">Choose how you want to contribute to collective learning:</p>
             
             <div>
-                <a href="https://the-blueprint.ghost.io/accumulating-knowledge" class="cta-button">Become a Founding Reader ($6/month)</a>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeAAP5eySgbRSXru-q1qLh_8WKwRb8-DNkGmbvnUwfMV-i3tg/viewform" class="cta-button">Submit Your Project</a>
+                <a href="articles.html" class="cta-button secondary">Read Free Articles</a>
+                <a href="#for-readers" class="cta-button secondary">Search Knowledge Base</a>
             </div>
             
-            <p style="margin-top: 30px;">Connect: <a href="https://discord.com/invite/2eDunttSeS" style="color: #1237b2;">Discord</a> | Instagram | <a href="https://www.facebook.com/61583844352552" style="color: #1237b2;">Facebook</a> | <a href="https://the-blueprint.ghost.io" style="color: #1237b2;">Newsletter</a></p>
+            <div style="margin-top: 15px;">
+                <a href="https://npc0-survey-front.static.hf.space" class="cta-button">Self-Report Journey (AI)</a>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <a href="https://the-blueprint.ghost.io/accumulating-knowledge" class="cta-button">Become a Founding Reader ($6/month)</a>
+            </div>
+            
+            <p style="margin-top: 40px; font-size: 0.95rem;">Connect with us: <a href="https://discord.com/invite/2eDunttSeS" style="color: #1237b2;">Discord</a> | <a href="https://www.facebook.com/61583844352552" style="color: #1237b2;">Facebook</a> | <a href="https://the-blueprint.ghost.io" style="color: #1237b2;">Newsletter</a></p>
         </div>
     </div>
 </body>
