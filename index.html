@@ -337,6 +337,78 @@
             margin-top: 30px;
             min-height: 500px;
         }
+
+                /* The Dialog Box - Styled as a Spec Memo */
+        #welcome-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: #333;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            z-index: 1000;
+            border-top: 8px solid var(--bp-blue);
+        }
+
+        #welcome-dialog::before {
+            content: "SYSTEM SPECIFICATION";
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--bp-blue);
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        #welcome-message {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            display: inline-block;
+            background-color: var(--bp-blue);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .close-btn:hover {
+            background-color: #0e2a7e;
+        }
+
+        .title-block {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-top: 2px solid white;
+            border-left: 2px solid white;
+            padding: 15px;
+            background: var(--bp-blue);
+            text-align: right;
+        }
+
+        .title-block span {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         
         @media (max-width: 768px) {
             h1 {
@@ -502,6 +574,12 @@
             </div>
         </div>
 
+        <!-- The Dialog Box -->
+        <div id="welcome-dialog">
+            <p id="welcome-message"></p>
+            <div class="close-btn" onclick="closeDialog()">Acknowledge Receipt</div>
+        </div>
+
         <div class="content-box" id="for-contributors">
             <h2>For Contributors: Share One's Journey</h2>
             <p>Whether one succeeded, failed, or learned something unexpected—your experience matters. We welcome various types of contributions:</p>
@@ -619,5 +697,24 @@
             <p style="margin-top: 40px; font-size: 0.95rem;">Connect with us: <a href="https://discord.com/invite/2eDunttSeS" style="color: #1237b2;">Discord</a> | <a href="https://www.facebook.com/61583844352552" style="color: #1237b2;">Facebook</a> | <a href="https://the-blueprint.ghost.io" style="color: #1237b2;">Newsletter</a></p>
         </div>
     </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const welcomeText = urlParams.get('welcome');
+
+            if (welcomeText) {
+                const dialog = document.getElementById('welcome-dialog');
+                const messageEl = document.getElementById('welcome-message');
+                
+                messageEl.textContent = welcomeText;
+                dialog.style.display = 'block';
+            }
+        };
+
+        function closeDialog() {
+            document.getElementById('welcome-dialog').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
